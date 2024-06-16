@@ -2,6 +2,8 @@ from typing import Tuple
 from enum import Enum
 from random import randint
 
+from .config import process_config as config
+
 class ProcessStatus(Enum):
     CREATED = 1,
     READY = 2,
@@ -34,9 +36,9 @@ class Process:
 class ProcessFactory:
     __next_pid: int = 1
 
-    __arrival_times_range: Tuple[int, int]  = (1, 100)
-    __burst_times_range: Tuple[int, int]  = (1, 15)
-    __memory_requirements_range: Tuple[int, int]  = (10, 100)
+    __arrival_times_range: Tuple[int, int]  = (config.range.arrival.start, config.range.arrival.end)
+    __burst_times_range: Tuple[int, int]  = (config.range.burst.start, config.range.burst.end)
+    __memory_requirements_range: Tuple[int, int]  = (config.range.memory.start, config.range.memory.end)
 
     @classmethod
     def set_arrival_times_range(cls, new_range: Tuple[int, int]) -> None:
