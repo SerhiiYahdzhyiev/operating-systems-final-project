@@ -27,7 +27,7 @@ class Process:
     def __repr__(self) -> str:
         repr_str = f"<Process\n\tpid={self.pid}\n\tstatus={self.status.name}" \
                    f"\n\tarrival_time={self.arrival_time}" \
-                   f"\n\tburst_time{self.burst_time}\n\tmemory_required={self.memory_required}\n>\n"
+                   f"\n\tburst_time={self.burst_time}\n\tmemory_required={self.memory_required}\n>\n"
         return repr_str
 
 
