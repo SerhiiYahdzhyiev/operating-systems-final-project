@@ -1,3 +1,3 @@
 class SimulationEvironment:
-    # TODO: Realize
-    pass
+    def run(self) -> None:
+        print("Running...")
