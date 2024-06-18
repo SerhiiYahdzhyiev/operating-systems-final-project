@@ -1,21 +1,35 @@
 #!/bin/env/python3
 
+import curses
+
+from asyncio import sleep, run
+
 from modules.args import root_parser
-from modules.simenv import SimulationEvironment
+from modules.process.factory import ProcessFactory
+from modules.tui import UI
+
 
 # TODO: Decompose, customize, rewrite, refactor...
-def main():
-    try:
-        simenv = SimulationEvironment()
-        print(simenv)
+async def main():
+    # TODO: Realize proper mechanism to config the simulation
+    args = root_parser.parse_args()
 
-        args = root_parser.parse_args()
+    ui = UI()
 
-        print(args.command)
-    except KeyboardInterrupt:
-        print("Exiting gracefully...")
-        # TODO: Implement gracefull exit (if needed)
+    processes = []
 
+    for _ in range(10):
+        processes.append(ProcessFactory.create())
+
+    while (True):
+        for process in processes:
+            process.execute()
+        ui.display_processes(processes)
+        await sleep(1)
 
 if __name__ == "__main__":
-    main()
+    try:
+        run(main())
+    except KeyboardInterrupt:
+        curses.endwin()
+        # TODO: Extend gracefull exit (if needed)
