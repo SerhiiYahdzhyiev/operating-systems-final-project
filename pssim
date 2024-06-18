@@ -1,0 +1,21 @@
+#!/bin/env/python3
+
+from modules.args import root_parser
+from modules.simenv import SimulationEvironment
+
+# TODO: Decompose, customize, rewrite, refactor...
+def main():
+    try:
+        simenv = SimulationEvironment()
+        print(simenv)
+
+        args = root_parser.parse_args()
+
+        print(args.command)
+    except KeyboardInterrupt:
+        print("Exiting gracefully...")
+        # TODO: Implement gracefull exit (if needed)
+
+
+if __name__ == "__main__":
+    main()
