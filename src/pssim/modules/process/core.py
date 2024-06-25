@@ -1,7 +1,8 @@
+from pssim.interfaces.process import IProcess
 from .status import ProcessStatus
 
 
-class Process:
+class Process(IProcess):
     def __init__(
         self,
         pid: int,
@@ -30,16 +31,19 @@ class Process:
                    f"\t{self._burst_time_left}\t{self.memory_required}\n"
         return _str
 
-    def execute(self):
+    def execute(self, time: int = 1):
         if (self._burst_time_left):
             self.status = ProcessStatus.EXECUTING
-            self._burst_time_left -= 1
+            self._burst_time_left -= time
             return
         self.status = ProcessStatus.FINISHED
 
     def wait(self, time: int):
         self.status = ProcessStatus.WAITING
         self._time_waited += time
+
+    def set_ready(self):
+        self.status = ProcessStatus.READY
 
     @property
     def finished(self) -> bool:
