@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pssim"
+version = "0.0.1"
+requires-python = ">=3.12"
+dependencies = [
+    "asyncio",
+    "PyYAML",
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.scripts]
+pssim = "pssim.__main__:main"
