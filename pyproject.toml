@@ -9,10 +9,11 @@ requires-python = ">=3.12"
 dependencies = [
     "asyncio",
     "PyYAML",
+    "pydantic",
 ]
 classifiers = [
     "License :: OSI Approved :: MIT License",
 ]
 
 [project.scripts]
-pssim = "pssim.__main__:main"
+pssim = "pssim.__main__:run_main"

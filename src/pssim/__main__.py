@@ -25,9 +25,12 @@ async def main():
         ui.display_processes(processes)
         await sleep(1)
 
-if __name__ == "__main__":
+def run_main():
     try:
         run(main())
     except KeyboardInterrupt:
         curses.endwin()
         # TODO: Extend gracefull exit (if needed)
+
+if __name__ == "__main__":
+    run_main()
