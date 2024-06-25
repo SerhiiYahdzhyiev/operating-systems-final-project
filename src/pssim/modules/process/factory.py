@@ -1,7 +1,6 @@
-from typing import Tuple
 from random import randint
 
-from modules.common.types import Range
+from pssim.modules.common.types import Range
 
 from .core import Process
 from ..config import process_config as config

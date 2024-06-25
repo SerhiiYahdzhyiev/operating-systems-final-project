@@ -2,9 +2,9 @@ import curses
 
 from asyncio import sleep, run
 
-from modules.args import root_parser
-from modules.process.factory import ProcessFactory
-from modules.tui import UI
+from pssim.modules.args import root_parser
+from pssim.modules.process.factory import ProcessFactory
+from pssim.modules.tui import UI
 
 
 # TODO: Decompose, customize, rewrite, refactor...

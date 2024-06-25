@@ -3,7 +3,7 @@ import re
 
 from typing import List
 
-from modules.process.core import Process
+from pssim.modules.process.core import Process
 
 
 class UI:
