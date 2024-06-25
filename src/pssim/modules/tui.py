@@ -3,10 +3,12 @@ import re
 
 from typing import List
 
-from pssim.modules.process.core import Process
+from pssim.interfaces.memory import IMemory
+from pssim.interfaces.process import IProcess
+from pssim.interfaces.ui import IUi
 
 
-class UI:
+class UI(IUi):
     __process_table_header = f"\tPID\tSTATUS\t\tARRIVED\tTIME\tMEMORY\n"
 
     def __init__(self):
@@ -42,7 +44,7 @@ class UI:
         self._screen.keypad(True)
 
 
-    def display_processes(self, processes: List[Process]):
+    def display_processes(self, processes: List[IProcess]):
         self._screen.clear()
         self._screen.addstr(0, 0, self.__process_table_header, curses.A_REVERSE)
 
@@ -67,3 +69,5 @@ class UI:
         for c in chars:
             self._screen.addstr(c,curses.color_pair(colors.get(c, 0)))
 
+    def display_memory(self, memory: IMemory):
+        ...
