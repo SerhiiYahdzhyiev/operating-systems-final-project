@@ -9,24 +9,18 @@ from ..config import process_config as config
 class ProcessFactory:
     __next_pid: int = 1
 
-    __arrival_times_range: Range  = (config.range.arrival.start, config.range.arrival.end)
-    __burst_times_range: Range  = (config.range.burst.start, config.range.burst.end)
-    __memory_requirements_range: Range  = (config.range.memory.start, config.range.memory.end)
-
-    @classmethod
-    def set_arrival_times_range(cls, new_range: Range) -> None:
-        # TODO: Add specific validations for new range
-        cls.__arrival_times_range = new_range
-
-    @classmethod
-    def set_burst_times_range(cls, new_range: Range) -> None:
-        # TODO: Add specific validations for new range
-        cls.__burst_times_range = new_range
-
-    @classmethod
-    def set_memory_requirements_range(cls, new_range: Range) -> None:
-        # TODO: Add specific validations for new range
-        cls.__memory_requirements_range = new_range
+    __arrival_times_range: Range  = (
+            config["range"]["arrival"]["start"],
+            config["range"]["arrival"]["end"],
+        )
+    __burst_times_range: Range  = (
+            config["range"]["burst"]["start"],
+            config["range"]["burst"]["end"],
+        )
+    __memory_requirements_range: Range  = (
+            config["range"]["memory"]["start"],
+            config["range"]["memory"]["end"],
+        )
 
     @classmethod
     def create(cls) -> Process:
