@@ -14,15 +14,25 @@ async def main():
 
     ui = UI()
 
-    processes = []
+    process = ProcessFactory.create()
 
-    for _ in range(10):
-        processes.append(ProcessFactory.create())
+    i = 10
+    while(i):
+        i-= 1
+        process.wait(1)
+        ui.display_processes([process])
+        await sleep(1)
 
+
+
+    # processes = []
+    #
+    # for _ in range(10):
+    #     processes.append(ProcessFactory.create())
+    #
     while (True):
-        for process in processes:
-            process.execute()
-        ui.display_processes(processes)
+        process.execute()
+        ui.display_processes([process])
         await sleep(1)
 
 def run_main():
