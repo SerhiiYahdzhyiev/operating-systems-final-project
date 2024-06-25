@@ -1,39 +1,24 @@
 import curses
 
-from asyncio import sleep, run
+from asyncio import run
 
 from pssim.modules.args import root_parser
-from pssim.modules.process.factory import ProcessFactory
-from pssim.modules.tui import UI
+from pssim.modules.config import show_config
+from pssim.modules.simenv import SimulationEvironment
 
+simenv = SimulationEvironment()
 
 # TODO: Decompose, customize, rewrite, refactor...
 async def main():
     # TODO: Realize proper mechanism to config the simulation
     args = root_parser.parse_args()
 
-    ui = UI()
+    if args.command == "show-config":
+        show_config()
+        exit(0)
 
-    process = ProcessFactory.create()
-
-    i = 10
-    while(i):
-        i-= 1
-        process.wait(1)
-        ui.display_processes([process])
-        await sleep(1)
-
-
-
-    # processes = []
-    #
-    # for _ in range(10):
-    #     processes.append(ProcessFactory.create())
-    #
-    while (True):
-        process.execute()
-        ui.display_processes([process])
-        await sleep(1)
+    if args.command == "run":
+        await simenv.run()
 
 def run_main():
     try:
