@@ -7,6 +7,8 @@ from pssim.modules.process.core import Process
 
 
 class UI:
+    __process_table_header = f"\tPID\tSTATUS\t\tARRIVED\tTIME\tMEMORY\n"
+
     def __init__(self):
         self._screen = curses.initscr()
         self._height, self._width = self._screen.getmaxyx()
@@ -31,12 +33,18 @@ class UI:
             curses.COLOR_YELLOW,
             curses.COLOR_BLACK,
         )
+        curses.init_pair(
+            curses.COLOR_CYAN,
+            curses.COLOR_CYAN,
+            curses.COLOR_BLACK,
+        )
         # TODO: Setup rest of colors
         self._screen.keypad(True)
 
 
     def display_processes(self, processes: List[Process]):
         self._screen.clear()
+        self._screen.addstr(0, 0, self.__process_table_header, curses.A_REVERSE)
 
         for process in processes:
             self._addstr(str(process))
