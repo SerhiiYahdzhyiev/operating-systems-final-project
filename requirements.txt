@@ -8,4 +8,3 @@ pydantic_core==2.18.4
 pyproject_hooks==1.1.0
 PyYAML==6.0.1
 typing_extensions==4.12.2
-windows-curses==2.3.3
