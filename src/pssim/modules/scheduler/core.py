@@ -11,20 +11,20 @@ class Scheduler():
 
     def __init__(self, strategy: ISchedulingStrategy):
         self.strategy = strategy
-        # TODO: Relize queues
         self.queues = (self.ready, self.waiting)
 
-    def schedule(
+    async def schedule(
         self,
         processes: List[IProcess],
         cpu: ICpu,
         mem_manager: IMemoryManager,
         memory: IMemory,
     ):
-        self.strategy.schedule(
+        await self.strategy.schedule(
             processes,
             cpu,
             mem_manager,
             memory,
-            self.queues
+            self.queues,
         )
+

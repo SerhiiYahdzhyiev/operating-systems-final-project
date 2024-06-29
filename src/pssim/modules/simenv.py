@@ -22,11 +22,10 @@ class CPU(ICpu):
 class SimulationEvironment:
     _num_processes = config["num_processes"] 
 
-    _scheduling_strategy = get_scheduling_strategy[config["scheduling_strategy"]]()
-
     def __init__(self):
         self.ui = UI()
-        self.shcheduler = Scheduler(self._scheduling_strategy)
+        _scheduling_strategy = get_scheduling_strategy[config["scheduling_strategy"]](self.ui)
+        self.scheduler = Scheduler(_scheduling_strategy)
         self.cpu = CPU()
 
     async def run(self): 
@@ -34,8 +33,4 @@ class SimulationEvironment:
         for _ in range(self._num_processes):
             processes.append(ProcessFactory.create())
 
-        while (True):
-            for process in processes:
-                self.cpu.execute(process)
-            self.ui.display_processes(processes)
-            await sleep(1)
+        await self.scheduler.schedule(processes, self.cpu, None, None)
