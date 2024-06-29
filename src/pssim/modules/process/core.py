@@ -20,23 +20,23 @@ class Process(IProcess):
         self._time_waited = 0
 
     def __repr__(self) -> str:
-        repr_str = f"<Process\n\tpid={self.pid}\n\tstatus={self.status.name}" \
+        repr_str = f"<Process\n\tpid={self.pid}\n\tstatus={self.status.value}" \
                    f"\n\tarrival_time={self.arrival_time}" \
                    f"\n\tburst_time={self.burst_time}\n\tmemory_required={self.memory_required}\n>\n"
         return repr_str
 
     def __str__(self) -> str:
-        _str = f"\t{self.pid}\t{self.status.name}" \
+        _str = f"\t{self.pid}\t{self.status.value}" \
                    f"\t{self.arrival_time}" \
                    f"\t{self._burst_time_left}\t{self.memory_required}\n"
         return _str
 
     def execute(self, time: int = 1):
-        if (self._burst_time_left):
+        if (self._burst_time_left > 0):
             self.status = ProcessStatus.EXECUTING
             self._burst_time_left -= time
-            return
-        self.status = ProcessStatus.FINISHED
+            if self._burst_time_left == 0:
+                self.status = ProcessStatus.FINISHED
 
     def wait(self, time: int):
         self.status = ProcessStatus.WAITING
