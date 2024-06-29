@@ -36,8 +36,8 @@ class FCFS(BaseStrategy):
 
 
 
-class SJF(ISchedulingStrategy):
-    def schedule(
+class SJF(BaseStrategy):
+    async def schedule(
         self,
         processes: List[IProcess],
         cpu: ICpu,
@@ -45,7 +45,18 @@ class SJF(ISchedulingStrategy):
         memory: IMemory,
         queues: Tuple[SimpleQueue, SimpleQueue]
     ):
-        ...
+        sorted_ = list(sorted(processes, key=lambda p: p.burst_time))
+
+        for process in sorted_:
+            process.set_ready()
+            queues[0].put(process)
+
+        while not queues[0].empty():
+            process = queues[0].get()
+            while not process.finished:
+                cpu.execute(process);
+                await sleep(cpu.cycle_time)
+                self.ui.display_processes(processes)
 
 class SRTF(ISchedulingStrategy):
     def schedule(
