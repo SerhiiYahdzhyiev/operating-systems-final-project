@@ -8,6 +8,7 @@ class SimulatorConfig(BaseModel):
 
 class MemoryConfig(BaseModel):
     size: int
+    management_strategy: str
 
 class RangeModel(BaseModel):
     start: int
@@ -38,12 +39,18 @@ with open(f"{config_path}/../config/mem.yaml") as f:
 
     _ = MemoryConfig(**mem_config)
 
-def show_config():
-    print("Simulation\n")
+def show_config(*args):
+    print("============")
+    print("Simulation")
+    print("============\n")
     print(yaml.dump(sim_config))
-    print("Memeory\n")
+    print("============")
+    print("Memory")
+    print("============\n")
     print(yaml.dump(mem_config))
-    print("Process\n")
+    print("============")
+    print("Process")
+    print("============\n")
     print(yaml.dump(process_config))
 
 def dump_configs():
@@ -58,6 +65,50 @@ def _set_config(config: dict, key: str, value: int):
     config[key] = value
     dump_configs()
 
-def set_num_porcesses(value: int):
-    assert value > 0
-    _set_config(process_config, "num_processes", value)
+def _set_process_range(key: str, args: list):
+    assert len(args) >= 2
+    assert int(args[0])
+    assert int(args[1])
+    assert int(args[0]) > 0
+    assert int(args[1]) >= int(args[0])
+    _set_config(process_config["range"][key], "start", int(args[0]))
+    _set_config(process_config["range"][key], "end", int(args[1]))
+    print(f"pssim: set processes {key} range to {args[0]} - {args[1]}")
+
+def set_num_porcesses(args: list):
+    assert len(args)
+    assert int(args[0])
+    assert int(args[0]) > 0
+    _set_config(process_config, "num_processes", int(args[0]))
+    print(f"pssim: set generate process number to {args[0]}")
+
+def set_memory_allocation_algo(args: list): 
+    assert len(args)
+    assert args[0] in ["FF", "BF"]
+    get_full_algo_name_by = {
+            "FF": "First Fit",
+            "BF": "Best Fit",
+    }
+    _set_config(mem_config, "management_strategy", args[0])
+    print(f"pssim: set memory alocation strategy to {get_full_algo_name_by[args[0]]}")
+
+def set_scheduling_algo(args: list): 
+    assert len(args)
+    assert args[0] in ["FCFS", "SJF", "SRTF", "RR"]
+    get_full_algo_name_by = {
+            "FCFS": "First Come - First Served",
+            "SJF": "Shortest Job First",
+            "SRTF": "Shortest Remaining Time First",
+            "RR": "Round Robin",
+    }
+    _set_config(sim_config, "scheduling_strategy", args[0])
+    print(f"pssim: set scheduling strategy to {get_full_algo_name_by[args[0]]}")
+
+def set_arrival_time_range(args: list):
+    _set_process_range("arrival", args)
+
+def set_burst_time_range(args: list):
+    _set_process_range("burst", args)
+
+def set_memory_requirements_range(args: list):
+    _set_process_range("memory", args)

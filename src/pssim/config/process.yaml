@@ -1,10 +1,11 @@
+num_processes: 10
 range:
   arrival:
+    end: 100
     start: 1
-    end: 100
   burst:
-    start: 10
-    end: 15
+    end: 16
+    start: 15
   memory:
-    start: 10
     end: 100
+    start: 10
