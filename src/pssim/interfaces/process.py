@@ -12,3 +12,8 @@ class IProcess(ABC):
     @abstractmethod
     def set_ready(self):
         raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def finished(self) -> bool:
+        raise NotImplementedError
