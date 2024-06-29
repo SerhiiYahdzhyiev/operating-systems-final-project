@@ -1,4 +1,4 @@
-from queue import Queue
+from queue import SimpleQueue
 from typing import List, Tuple
 from abc import ABC, abstractmethod
 
@@ -11,14 +11,19 @@ class ICpu(ABC):
     def execute(self, process: IProcess):
         ...
 
+    @property
+    @abstractmethod
+    def cycle_time(self) -> int:
+        ...
+
 class ISchedulingStrategy(ABC):
     @abstractmethod
-    def schedule(
+    async def schedule(
         self,
         processes: List[IProcess],
         cpu: ICpu,
         mem_manager: IMemoryManager,
         memory: IMemory,
-        queues: Tuple[Queue, Queue],
+        queues: Tuple[SimpleQueue, SimpleQueue],
     ):
         ...

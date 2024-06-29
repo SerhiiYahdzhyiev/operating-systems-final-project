@@ -10,11 +10,13 @@ from pssim.modules.scheduler.strategy import get_scheduling_strategy
 
 class CPU(ICpu):
     _cycle_time = 1
-    # TODO: Realize
-    pass
 
     def execute(self, process: IProcess):
         process.execute(self._cycle_time)
+
+    @property
+    def cycle_time(self) -> int:
+        return self._cycle_time
 
 
 class SimulationEvironment:
