@@ -75,11 +75,11 @@ def _set_process_range(key: str, args: list):
     _set_config(process_config["range"][key], "end", int(args[1]))
     print(f"pssim: set processes {key} range to {args[0]} - {args[1]}")
 
-def set_num_porcesses(args: list):
+def set_num_processes(args: list):
     assert len(args)
     assert int(args[0])
     assert int(args[0]) > 0
-    _set_config(process_config, "num_processes", int(args[0]))
+    _set_config(sim_config, "num_processes", int(args[0]))
     print(f"pssim: set generate process number to {args[0]}")
 
 def set_memory_allocation_algo(args: list): 

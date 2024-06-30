@@ -3,7 +3,7 @@ import curses
 from asyncio import run
 
 from pssim.modules.args import root_parser
-from pssim.modules.config import show_config, set_num_porcesses, set_burst_time_range, set_arrival_time_range, set_memory_requirements_range, set_scheduling_algo, set_memory_allocation_algo
+from pssim.modules.config import show_config, set_num_processes, set_burst_time_range, set_arrival_time_range, set_memory_requirements_range, set_scheduling_algo, set_memory_allocation_algo
 from pssim.modules.simenv import SimulationEvironment
 
 
@@ -13,7 +13,7 @@ async def run_():
 
 get_action_by = {
         "show-config": show_config,
-        "set-num-processes": set_num_porcesses,
+        "set-num-processes": set_num_processes,
         "set-burst-time-range": set_burst_time_range,
         "set-arrival-time-range": set_arrival_time_range,
         "set-memory-requirements-range": set_memory_requirements_range,
