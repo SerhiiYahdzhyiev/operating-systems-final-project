@@ -53,3 +53,11 @@ class Process(IProcess):
     @property
     def finished(self) -> bool:
         return bool(not self._burst_time_left)
+
+    @property
+    def waiting_time(self) -> int:
+        return self._time_waited
+
+    @property
+    def service_time(self) -> int:
+        return self._time_executed
