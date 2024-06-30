@@ -28,12 +28,13 @@ class FCFS(BaseStrategy):
             process.set_ready()
             queues[0].put(process)
 
-        while not queues[0].empty():
-            process = queues[0].get()
-            while not process.finished:
-                cpu.execute(process);
-                await sleep(cpu.cycle_time)
+        while True:
+            if not queues[0].empty():
+                process = queues[0].get()
+                while not process.finished:
+                    cpu.execute(process);
                 self.ui.display_processes(processes)
+                await sleep(cpu.cycle_time)
 
 
 
