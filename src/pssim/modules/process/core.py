@@ -47,6 +47,9 @@ class Process(IProcess):
     def set_ready(self):
         self.status = ProcessStatus.READY
 
+    def set_waiting(self):
+        self.status = ProcessStatus.WAITING
+
     @property
     def finished(self) -> bool:
         return bool(not self._burst_time_left)
