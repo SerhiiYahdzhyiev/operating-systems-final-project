@@ -3,7 +3,6 @@ import re
 
 from typing import List
 
-from pssim.interfaces.memory import IMemory
 from pssim.interfaces.process import IProcess
 from pssim.interfaces.ui import IUi
 
@@ -68,6 +67,3 @@ class UI(IUi):
         chars: list[str] = re.split(pattern, str_)
         for c in chars:
             self._screen.addstr(c,curses.color_pair(colors.get(c, 0)))
-
-    def display_memory(self, memory: IMemory):
-        ...
