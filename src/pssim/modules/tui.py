@@ -5,6 +5,7 @@ from typing import List
 
 from pssim.interfaces.process import IProcess
 from pssim.interfaces.ui import IUi
+from pssim.modules.config import sim_config
 
 
 class UI(IUi):
@@ -43,13 +44,20 @@ class UI(IUi):
         self._screen.keypad(True)
 
 
-    def display_processes(self, processes: List[IProcess]):
+    def update(self, timer: int, processes: List[IProcess]):
         self._screen.clear()
-        self._screen.addstr(0, 0, self.__process_table_header, curses.A_REVERSE)
+        self._screen.addstr(0, 0, f"Scheduling Algorithm: {sim_config["scheduling_strategy"]}")
+        self._screen.addstr(1, 0, f"Processes: {sim_config["num_processes"]}")
+        self._screen.addstr(2, 0, f"Time: {timer}")
+        self._screen.addstr(3, 0, "\n", curses.A_REVERSE)
+        self._screen.addstr(4, 0, self.__process_table_header, curses.A_REVERSE)
 
         for process in processes:
             self._addstr(str(process))
 
+        self._screen.addstr(int(self._height - 4), 0, "Footer mock: 5")
+        self._screen.addstr(int(self._height - 3), 0, "Footer mock2: 10")
+        self._screen.addstr(int(self._height - 2), 0, "\n")
         self._screen.addstr(int(self._height - 1), 0, "PRESS CTRL+C TO TERMINATE", curses.A_REVERSE)
         self._screen.refresh()
 
