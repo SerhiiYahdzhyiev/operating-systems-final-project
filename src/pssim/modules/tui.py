@@ -9,7 +9,7 @@ from pssim.interfaces.ui import IUi
 
 
 class UI(IUi):
-    __process_table_header = f"\tPID\tSTATUS\t\tARRIVED\tTIME\tMEMORY\n"
+    __process_table_header = f"\tPID\tSTATUS\t\tARRIVED\tBTIME\tLEFT\tWAITED\tMEMORY\n"
 
     def __init__(self):
         self._screen = curses.initscr()
