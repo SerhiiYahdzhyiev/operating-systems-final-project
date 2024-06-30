@@ -17,6 +17,7 @@ class FCFS(BaseStrategy):
         self,
         processes: List[IProcess],
         cpu: ICpu,
+        # TODO: Realize allocation
         mem_manager: IMemoryManager,
         memory: IMemory,
         queues: Tuple[SimpleQueue, SimpleQueue]
@@ -41,6 +42,7 @@ class SJF(BaseStrategy):
         self,
         processes: List[IProcess],
         cpu: ICpu,
+        # TODO: Realize allocation
         mem_manager: IMemoryManager,
         memory: IMemory,
         queues: Tuple[SimpleQueue, SimpleQueue]
@@ -59,10 +61,11 @@ class SJF(BaseStrategy):
                 self.ui.display_processes(processes)
 
 class SRTF(ISchedulingStrategy):
-    def schedule(
+    async def schedule(
         self,
         processes: List[IProcess],
         cpu: ICpu,
+        # TODO: Realize allocation
         mem_manager: IMemoryManager,
         memory: IMemory,
         queues: Tuple[SimpleQueue, SimpleQueue]
@@ -70,10 +73,11 @@ class SRTF(ISchedulingStrategy):
         ...
 
 class RR(ISchedulingStrategy):
-    def schedule(
+    async def schedule(
         self,
         processes: List[IProcess],
         cpu: ICpu,
+        # TODO: Realize allocation
         mem_manager: IMemoryManager,
         memory: IMemory,
         queues: Tuple[SimpleQueue, SimpleQueue]
