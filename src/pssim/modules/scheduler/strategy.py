@@ -1,87 +1,152 @@
-from asyncio import sleep
-from typing import List, Tuple
+from typing import Optional
 from queue import SimpleQueue
-from pssim.interfaces.memory import IMemory, IMemoryManager
 from pssim.interfaces.process import IProcess
-from pssim.interfaces.scheduler import ICpu, ISchedulingStrategy
-from pssim.interfaces.ui import IUi
+from pssim.interfaces.scheduler import ISchedulingStrategy
+
 
 class BaseStrategy(ISchedulingStrategy):
-    def __init__(self, ui: IUi):
-        self.ui = ui
+    _ready = SimpleQueue()
+    _waiting_queue = SimpleQueue()
+
+    _waiting = []
+
+    @property
+    def ready(self) -> SimpleQueue:
+        return self._ready
+
+    @property
+    def waiting(self) -> SimpleQueue:
+        return self._waiting_queue
+
+    def update(self, current: IProcess|None):
+        if not self.waiting.empty():
+            for p in self._waiting:
+                p.wait(1)
+
+        if not current:
+            if not self.waiting.empty():
+                next = self._waiting_queue.get()
+                self._waiting.remove(next)
+                next.set_ready()
+                self.ready.put(next)
 
 
-# TODO: Realize strategies
 class FCFS(BaseStrategy):
-    async def schedule(
+    def schedule(
         self,
-        processes: List[IProcess],
-        cpu: ICpu,
-        # TODO: Realize allocation
-        mem_manager: IMemoryManager,
-        memory: IMemory,
-        queues: Tuple[SimpleQueue, SimpleQueue]
+        process: IProcess,
+        current: Optional[IProcess],
     ):
-        sorted_ = list(sorted(processes, key=lambda p: p.arrival_time))
-
-        for process in sorted_:
+        if not current or current.finished:
+            if not self.waiting.empty():
+                next = self.waiting.get()
+                self._waiting.remove(next)
+                next.set_ready()
+                self.ready.put(next)
+                process.set_waiting()
+                self.waiting.put(process)
+                self._waiting.append(process)
+                return
             process.set_ready()
-            queues[0].put(process)
-
-        while True:
-            if not queues[0].empty():
-                process = queues[0].get()
-                while not process.finished:
-                    cpu.execute(process);
-                self.ui.display_processes(processes)
-                await sleep(cpu.cycle_time)
-
+            self.ready.put(process)
+            return
+        process.set_waiting()
+        self.waiting.put(process)
+        self._waiting.append(process)
 
 
 class SJF(BaseStrategy):
-    async def schedule(
-        self,
-        processes: List[IProcess],
-        cpu: ICpu,
-        # TODO: Realize allocation
-        mem_manager: IMemoryManager,
-        memory: IMemory,
-        queues: Tuple[SimpleQueue, SimpleQueue]
-    ):
-        sorted_ = list(sorted(processes, key=lambda p: p.burst_time))
+    def update(self, current: IProcess|None):
+        if len(self._waiting):
+            for p in self._waiting:
+                p.wait(1)
 
-        for process in sorted_:
+        if not current:
+            if len(self._waiting):
+                self._waiting.sort(reverse=True, key=lambda p: p.burst_time)
+                next = self._waiting[-1]
+                self._waiting.remove(next)
+                next.set_ready()
+                self.ready.put(next)
+
+    def schedule(
+        self,
+        process: IProcess,
+        current: Optional[IProcess],
+    ):
+        if not current or current.finished:
+            if len(self._waiting):
+                self._waiting.sort(reverse=True, key=lambda p: p.burst_time)
+                next = self._waiting[-1]
+                self._waiting.remove(next)
+                next.set_ready()
+                self.ready.put(next)
+                process.set_waiting()
+                self._waiting.append(process)
+                return
             process.set_ready()
-            queues[0].put(process)
+            self.ready.put(process)
+            return
+        process.set_waiting()
+        self._waiting.append(process)
 
-        while not queues[0].empty():
-            process = queues[0].get()
-            while not process.finished:
-                cpu.execute(process);
-                await sleep(cpu.cycle_time)
-                self.ui.display_processes(processes)
 
-class SRTF(ISchedulingStrategy):
-    async def schedule(
+class SRTF(BaseStrategy):
+    def update(self, current: IProcess|None, **kwargs):
+            self._waiting.sort(reverse=True, key=lambda p: p._burst_time_left)
+            if len(self._waiting):
+                next = self._waiting[-1]
+                if not current:
+                    self._waiting.remove(next)
+                    next.set_ready()
+                    self.ready.put(next)
+                else:
+                    if next._burst_time_left < current._burst_time_left:
+                        kwargs.get("set_current", lambda x: ...)(next)
+                        self.ready.put(next)
+                        self._waiting.remove(next)
+                        current.set_waiting()
+                        self._waiting.append(current)
+            for p in self._waiting:
+                p.wait(1)
+
+
+    def schedule(
         self,
-        processes: List[IProcess],
-        cpu: ICpu,
-        # TODO: Realize allocation
-        mem_manager: IMemoryManager,
-        memory: IMemory,
-        queues: Tuple[SimpleQueue, SimpleQueue]
+        process: IProcess,
+        current: Optional[IProcess],
+        **kwargs,
     ):
-        ...
+        if not current or current.finished:
+            if len(self._waiting):
+                self._waiting.sort(reverse=True, key=lambda p: p._burst_time_left)
+                next = self._waiting[-1]
+                self._waiting.remove(next)
+                next.set_ready()
+                self.ready.put(next)
+                process.set_waiting()
+                self._waiting.append(process)
+                return
+            process.set_ready()
+            self.ready.put(process)
+            return
+        if len(self._waiting):
+            self._waiting.sort(reverse=True, key=lambda p: p._burst_time_left)
+            next = self._waiting[-1]
+            if next._burst_time_left < current._burst_time_left:
+                kwargs.get("set_current", lambda x: ...)(next)
+                self.ready.put(next)
+                current.set_waiting()
+                self._waiting.append(current)
+        process.set_waiting()
+        self._waiting.append(process)
 
-class RR(ISchedulingStrategy):
-    async def schedule(
+# TODO: Realize
+class RR(BaseStrategy):
+     def schedule(
         self,
-        processes: List[IProcess],
-        cpu: ICpu,
-        # TODO: Realize allocation
-        mem_manager: IMemoryManager,
-        memory: IMemory,
-        queues: Tuple[SimpleQueue, SimpleQueue]
+        process: IProcess,
+        current: Optional[IProcess],
     ):
         ...
 
