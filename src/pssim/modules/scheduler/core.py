@@ -1,30 +1,49 @@
 from typing import List
-from queue import SimpleQueue
-
 from pssim.interfaces.process import IProcess
-from pssim.interfaces.memory import IMemoryManager, IMemory
-from pssim .interfaces.scheduler import ICpu, ISchedulingStrategy
+from pssim.interfaces.scheduler import ISchedulingStrategy
 
-class Scheduler():
-    ready = SimpleQueue()
-    waiting = SimpleQueue()
+
+class Scheduler:
+    _current: IProcess|None = None
 
     def __init__(self, strategy: ISchedulingStrategy):
         self.strategy = strategy
-        self.queues = (self.ready, self.waiting)
 
-    async def schedule(
+    def update(self):
+        self.strategy.update(
+            self._current,
+            set_current=self.set_current()
+        )
+
+    def schedule(
         self,
         processes: List[IProcess],
-        cpu: ICpu,
-        mem_manager: IMemoryManager,
-        memory: IMemory,
     ):
-        await self.strategy.schedule(
-            processes,
-            cpu,
-            mem_manager,
-            memory,
-            self.queues,
-        )
+        current = self.get_current()
+        for process in processes:
+            self.strategy.schedule(
+                process,
+                current,
+                set_current=self.set_current()
+            )
+
+    def get_current(self) -> IProcess|None:
+        if not self._current:
+            if self.strategy.ready.empty():
+                 self._current = None
+            else:
+                 self._current = self.strategy.ready.get()
+        else:
+            if self._current.finished:
+                if self.strategy.ready.empty():
+                     self._current = None
+                else:
+                     self._current = self.strategy.ready.get()
+
+        return self._current
+
+    def set_current(self):
+        def callback(process):
+            self._current = process
+        return callback
 
