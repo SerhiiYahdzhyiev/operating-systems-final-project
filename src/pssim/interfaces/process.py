@@ -13,6 +13,10 @@ class IProcess(ABC):
     def set_ready(self):
         raise NotImplementedError
 
+    @abstractmethod
+    def set_waiting(self):
+        raise NotImplementedError
+
     @property
     @abstractmethod
     def finished(self) -> bool:
