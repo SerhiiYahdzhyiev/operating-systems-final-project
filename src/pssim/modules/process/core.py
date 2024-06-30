@@ -18,6 +18,7 @@ class Process(IProcess):
 
         self._burst_time_left = self.burst_time
         self._time_waited = 0
+        self._time_executed = 0
 
     def __repr__(self) -> str:
         repr_str = f"<Process\n\tpid={self.pid}\n\tstatus={self.status.value}" \
@@ -37,6 +38,7 @@ class Process(IProcess):
             self._burst_time_left -= time
             if self._burst_time_left == 0:
                 self.status = ProcessStatus.FINISHED
+            self._time_executed += 1
 
     def wait(self, time: int):
         self.status = ProcessStatus.WAITING
