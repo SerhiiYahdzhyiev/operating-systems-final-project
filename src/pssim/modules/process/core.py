@@ -29,7 +29,7 @@ class Process(IProcess):
     def __str__(self) -> str:
         _str = f"\t{self.pid}\t{self.status.value}" \
                    f"\t{self.arrival_time}" \
-                   f"\t{self._burst_time_left}\t{self.memory_required}\n"
+                   f"\t{self.burst_time}\t{self._burst_time_left}\t{self._time_waited}\t{self.memory_required}\n"
         return _str
 
     def execute(self, time: int = 1):
