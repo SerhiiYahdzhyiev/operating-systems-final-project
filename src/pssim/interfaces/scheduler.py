@@ -1,10 +1,9 @@
 from queue import SimpleQueue
-from typing import List, Tuple
+from typing import Optional
 from abc import ABC, abstractmethod
 
-from pssim.interfaces.memory import IMemoryManager, IMemory
 from pssim.interfaces.process import IProcess
-from pssim.modules.tui import UI
+
 
 class ICpu(ABC):
     @abstractmethod
@@ -16,14 +15,29 @@ class ICpu(ABC):
     def cycle_time(self) -> int:
         ...
 
+
 class ISchedulingStrategy(ABC):
     @abstractmethod
-    async def schedule(
+    def schedule(
         self,
-        processes: List[IProcess],
-        cpu: ICpu,
-        mem_manager: IMemoryManager,
-        memory: IMemory,
-        queues: Tuple[SimpleQueue, SimpleQueue],
+        process: IProcess,
+        current: Optional[IProcess],
     ):
+        ...
+
+    @abstractmethod
+    def update(
+        self,
+        current: Optional[IProcess],
+    ):
+        ...
+
+    @property
+    @abstractmethod
+    def ready(self) -> SimpleQueue:
+        ...
+
+    @property
+    @abstractmethod
+    def waiting(self) -> SimpleQueue:
         ...
