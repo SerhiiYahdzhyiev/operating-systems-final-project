@@ -22,3 +22,13 @@ class IProcess(ABC):
   @abstractmethod
   def finished(self) -> bool:
     raise NotImplementedError
+
+  @property
+  @abstractmethod
+  def waiting_time(self) -> int:
+    raise NotImplementedError
+
+  @property
+  @abstractmethod
+  def service_time(self) -> int:
+    raise NotImplementedError
