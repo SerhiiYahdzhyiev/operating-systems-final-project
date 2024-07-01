@@ -2,6 +2,7 @@ from typing import Optional
 from queue import SimpleQueue
 from pssim.interfaces.process import IProcess
 from pssim.interfaces.scheduler import ISchedulingStrategy
+from pssim.modules.config import process_config
 
 
 class BaseStrategy(ISchedulingStrategy):
@@ -143,13 +144,61 @@ class SRTF(BaseStrategy):
     self._waiting.append(process)
 
 
-# TODO: Realize
 class RR(BaseStrategy):
+  _time_quantum: int = round(
+    (
+      process_config["range"]["burst"]["end"]
+      - process_config["range"]["burst"]["start"]
+    )
+    / 2
+  )
+
+  def update(self, current: IProcess | None, **kwargs):
+    if len(self._waiting):
+      for p in self._waiting:
+        p.wait(1)
+
+    if not current:
+      if self.ready.empty():
+        return
+      next = self.ready.get()
+      if next in self._waiting:
+        self._waiting.remove(next)
+      kwargs.get("set_current", lambda x: ...)(next)
+      return
+
+    if current.finished:
+      if self.ready.empty():
+        kwargs.get("set_current", lambda x: ...)(None)
+        return
+      next = self.ready.get()
+      kwargs.get("set_current", lambda x: ...)(next)
+      if next in self._waiting:
+        self._waiting.remove(next)
+      return
+
+    if current.service_time % self._time_quantum == 0:
+      if not self.ready.empty():
+        next = self.ready.get()
+        kwargs.get("set_current", lambda x: ...)(next)
+        current.set_ready()
+        self._waiting.append(current)
+        self.ready.put(current)
+
   def schedule(
     self,
     process: IProcess,
     current: Optional[IProcess],
-  ): ...
+    **kwargs,
+  ):
+    process.set_ready()
+    self.ready.put(process)
+    if (
+      current
+      and not current.finished
+      and not current.service_time % self._time_quantum == 0
+    ):
+      self._waiting.append(process)
 
 
 get_scheduling_strategy = {
