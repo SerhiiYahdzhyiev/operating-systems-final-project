@@ -5,6 +5,5 @@ from pssim.interfaces.process import IProcess
 
 
 class IUi(ABC):
-    @abstractmethod
-    def update(self, timer: int, processes: List[IProcess]):
-        ...
+  @abstractmethod
+  def update(self, timer: int, processes: List[IProcess]): ...
