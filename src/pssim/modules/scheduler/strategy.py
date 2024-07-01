@@ -18,7 +18,7 @@ class BaseStrategy(ISchedulingStrategy):
   def waiting(self) -> SimpleQueue:
     return self._waiting_queue
 
-  def update(self, current: IProcess | None):
+  def update(self, current: IProcess | None, **kwargs):
     if not self.waiting.empty():
       for p in self._waiting:
         p.wait(1)
@@ -36,6 +36,7 @@ class FCFS(BaseStrategy):
     self,
     process: IProcess,
     current: Optional[IProcess],
+    **kwargs,
   ):
     if not current or current.finished:
       if not self.waiting.empty():
@@ -56,7 +57,7 @@ class FCFS(BaseStrategy):
 
 
 class SJF(BaseStrategy):
-  def update(self, current: IProcess | None):
+  def update(self, current: IProcess | None, **kwargs):
     if len(self._waiting):
       for p in self._waiting:
         p.wait(1)
@@ -73,6 +74,7 @@ class SJF(BaseStrategy):
     self,
     process: IProcess,
     current: Optional[IProcess],
+    **kwargs,
   ):
     if not current or current.finished:
       if len(self._waiting):
