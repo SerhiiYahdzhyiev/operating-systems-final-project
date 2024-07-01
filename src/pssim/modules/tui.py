@@ -5,7 +5,7 @@ from typing import List
 
 from pssim.interfaces.process import IProcess
 from pssim.interfaces.ui import IUi
-from pssim.modules.config import sim_config
+from pssim.modules.config import sim_config, process_config
 
 
 class UI(IUi):
@@ -41,7 +41,14 @@ class UI(IUi):
     # TODO: Setup rest of colors
     self._screen.keypad(True)
 
-  def update(self, timer: int, processes: List[IProcess]):
+  def update(
+    self,
+    timer: int,
+    processes: List[IProcess],
+    waiting: float,
+    service: float,
+    turnaround: float,
+  ):
     self._screen.clear()
     self._screen.addstr(
       0, 0, f"Scheduling Algorithm: {sim_config["scheduling_strategy"]}"
@@ -54,8 +61,28 @@ class UI(IUi):
     for process in processes:
       self._addstr(str(process))
 
-    self._screen.addstr(int(self._height - 4), 0, "Footer mock: 5")
-    self._screen.addstr(int(self._height - 3), 0, "Footer mock2: 10")
+    if sim_config["scheduling_strategy"] == "RR":
+      time_quantum = round(
+        (
+          process_config["range"]["burst"]["end"]
+          - process_config["range"]["burst"]["start"]
+        )
+        / 2
+      )
+      self._screen.addstr(
+        int(self._height - 6), 0, f"Time quantum: {time_quantum}"
+      )
+    self._screen.addstr(
+      int(self._height - 5), 0, f"Average waiting time: {waiting:.2f}"
+    )
+    self._screen.addstr(
+      int(self._height - 4),
+      0,
+      f"Average service time (cpu utilization): {service:.2f}",
+    )
+    self._screen.addstr(
+      int(self._height - 3), 0, f"Average turnaround time: {turnaround:.2f}"
+    )
     self._screen.addstr(int(self._height - 2), 0, "\n")
     self._screen.addstr(
       int(self._height - 1), 0, "PRESS CTRL+C TO TERMINATE", curses.A_REVERSE

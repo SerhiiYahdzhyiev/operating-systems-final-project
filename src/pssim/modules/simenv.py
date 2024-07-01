@@ -61,5 +61,20 @@ class SimulationEvironment:
 
       self.scheduler.update()
       self._timer += 1
-      self.ui.update(self._timer, processes)
+      avg_waiting_time = sum([p.waiting_time for p in processes]) / (
+        len(processes) or 1
+      )
+      avg_service_time = sum([p.service_time for p in processes]) / (
+        len(processes) or 1
+      )
+      avg_turnaround_time = sum(
+        [p.service_time + p.waiting_time for p in processes]
+      ) / (len(processes) or 1)
+      self.ui.update(
+        self._timer,
+        processes,
+        avg_waiting_time,
+        avg_service_time,
+        avg_turnaround_time,
+      )
       await sleep(self.cpu.cycle_time)
