@@ -17,3 +17,23 @@ classifiers = [
 
 [project.scripts]
 pssim = "pssim.__main__:run_main"
+
+[tool.ruff]
+exclude = [
+    "dist",
+    "build",
+    ".eggs",
+    ".git",
+    "ruff_cache",
+    "venv",
+]
+
+line-length = 79
+indent-width = 2
+
+target-version = "py312"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
