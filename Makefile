@@ -15,3 +15,12 @@ clean:
 
 pinstall:
 	pip install -e .
+
+lint:
+	ruff check
+
+lfix:
+	ruff check --fix
+
+format:
+	ruff format
