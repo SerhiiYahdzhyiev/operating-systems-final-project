@@ -45,21 +45,28 @@ class SimulationEvironment:
         arrives[process.arrival_time].append(process)
 
     processes = []
+    current: IProcess|None = None
+
+    def set_current(next: IProcess):
+      nonlocal current
+      current = next
 
     while True:
+      for p in self.scheduler.waiting:
+        p.wait(1)
+
       arrived = arrives.get(self._timer, None)
 
       if arrived:
         for process in arrived:
           processes.append(process)
-        self.scheduler.schedule(arrived)
+          self.scheduler.schedule(process, current, set_current)
+      else:
+        self.scheduler.update(current, set_current)
 
-      current = self.scheduler.get_current()
-
-      if current:
+      if current and not current.finished:
         self.cpu.execute(current)
 
-      self.scheduler.update()
       self._timer += 1
       avg_waiting_time = sum([p.waiting_time for p in processes]) / (
         len(processes) or 1
