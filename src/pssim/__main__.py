@@ -3,7 +3,7 @@ import curses
 from asyncio import run
 
 from pssim.modules.args import root_parser
-from pssim.modules.config import (
+from pssim.modules.config.commands import (
   show_config,
   set_num_processes,
   set_burst_time_range,
@@ -39,7 +39,10 @@ async def main():
     await run_()
     return
 
-  get_action_by[args.command](args.arguments or None)
+  try:
+    get_action_by[args.command](args.arguments or None)
+  except AssertionError:
+    pass
 
 
 def run_main():

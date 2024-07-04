@@ -14,6 +14,7 @@ class IMemoryChunk(ABC):
   @abstractmethod
   def end(self) -> int: ...
 
+
 class IMemory(ABC):
   @property
   @abstractmethod
