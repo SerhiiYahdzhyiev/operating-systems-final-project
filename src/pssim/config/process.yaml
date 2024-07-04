@@ -1,0 +1,10 @@
+range:
+  arrival:
+    end: 20
+    start: 1
+  burst:
+    end: 15
+    start: 5
+  memory:
+    end: 100
+    start: 10

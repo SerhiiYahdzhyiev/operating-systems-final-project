@@ -1,0 +1,39 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pssim"
+version = "0.0.1"
+requires-python = ">=3.12"
+dependencies = [
+    "asyncio",
+    "PyYAML",
+    "pydantic",
+]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+]
+
+[project.scripts]
+pssim = "pssim.__main__:run_main"
+
+[tool.ruff]
+exclude = [
+    "dist",
+    "build",
+    ".eggs",
+    ".git",
+    "ruff_cache",
+    "venv",
+]
+
+line-length = 79
+indent-width = 2
+
+target-version = "py312"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"
