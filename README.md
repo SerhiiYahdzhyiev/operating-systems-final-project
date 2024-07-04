@@ -221,7 +221,3 @@ By following these instructions, you can effectively configure and run the PSSim
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-
----
-
-Please review and adjust the project structure section and any other details specific to your project as necessary. If there are additional files or information you'd like to include, feel free to provide them, and I can update the README accordingly.
