@@ -98,9 +98,6 @@ class UI(IUi):
     )
     self._screen.addstr(int(self._height - 3), 0, "\n")
     self._screen.addstr(
-      int(self._height - 2), 0, "Memory State:", curses.A_REVERSE
-    )
-    self._screen.addstr(
       int(self._height - 1), 0, "PRESS CTRL+C TO TERMINATE", curses.A_REVERSE
     )
     self._screen.refresh()
