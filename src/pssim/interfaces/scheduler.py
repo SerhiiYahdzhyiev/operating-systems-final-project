@@ -18,7 +18,7 @@ class ISchedulingStrategy(ABC):
   def schedule(
     self,
     process: IProcess,
-    current: IProcess|None,
+    current: IProcess | None,
     set_current: Callable,
   ): ...
 

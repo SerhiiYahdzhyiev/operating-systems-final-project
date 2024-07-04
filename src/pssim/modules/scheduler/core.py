@@ -7,13 +7,13 @@ class Scheduler:
   def __init__(self, strategy: ISchedulingStrategy):
     self.strategy = strategy
 
-  def update(self, current: IProcess|None, set_current):
+  def update(self, current: IProcess | None, set_current):
     self.strategy.update(current, set_current)
 
   def schedule(
     self,
     process: IProcess,
-    current: IProcess|None,
+    current: IProcess | None,
     set_current: Callable,
   ):
     self.strategy.schedule(process, current, set_current)
