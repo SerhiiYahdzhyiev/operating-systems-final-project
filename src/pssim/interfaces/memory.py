@@ -26,20 +26,6 @@ class IMemory(ABC):
 
   @abstractmethod
   def allocate(self, size: int) -> IMemoryChunk: ...
+
+  @abstractmethod
   def deallocate(self, chunk: IMemoryChunk): ...
-
-
-class IAllocationStrategy(ABC):
-  @abstractmethod
-  def alloc(self, ammount: int, memory: IMemory) -> IMemoryChunk: ...
-
-  @abstractmethod
-  def dealloc(self, chunk: IMemoryChunk, memory: IMemory): ...
-
-
-class IMemoryManager(ABC):
-  @abstractmethod
-  def alloc(self, ammount: int, memory: IMemory) -> IMemoryChunk: ...
-
-  @abstractmethod
-  def dealloc(self, chunk: IMemoryChunk, memeory: IMemory): ...
