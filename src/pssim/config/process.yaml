@@ -1,6 +1,6 @@
 range:
   arrival:
-    end: 30
+    end: 20
     start: 1
   burst:
     end: 15
