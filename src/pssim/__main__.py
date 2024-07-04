@@ -11,6 +11,7 @@ from pssim.modules.config.commands import (
   set_memory_requirements_range,
   set_scheduling_algo,
   set_memory_allocation_algo,
+  set_memory_size,
 )
 from pssim.modules.simenv import SimulationEvironment
 
@@ -28,6 +29,7 @@ get_action_by = {
   "set-memory-requirements-range": set_memory_requirements_range,
   "set-scheduling-algo": set_scheduling_algo,
   "set-memory-allocation-algo": set_memory_allocation_algo,
+  "set-memory-size": set_memory_size,
 }
 
 

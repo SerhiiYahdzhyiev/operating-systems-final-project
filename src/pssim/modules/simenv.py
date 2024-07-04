@@ -1,3 +1,4 @@
+from typing import List
 from asyncio import sleep
 from pssim.interfaces.scheduler import ICpu
 from pssim.modules.config import sim_config as config
@@ -6,6 +7,7 @@ from pssim.modules.scheduler.core import Scheduler
 from pssim.modules.tui import UI
 from pssim.interfaces.process import IProcess
 from pssim.modules.scheduler.strategy import get_scheduling_strategy
+from pssim.modules.memory.core import Memory
 
 
 class CPU(ICpu):
@@ -30,6 +32,7 @@ class SimulationEvironment:
     ]()
     self.scheduler = Scheduler(_scheduling_strategy)
     self.cpu = CPU()
+    self.memory = Memory()
 
   async def run(self):
     _processes = []
@@ -45,43 +48,67 @@ class SimulationEvironment:
         arrives[process.arrival_time].append(process)
 
     processes = []
-    current: IProcess|None = None
+    current: IProcess | None = None
 
     def set_current(next: IProcess):
       nonlocal current
       current = next
 
+    waiting_for_memory: List[IProcess] = []
+
+    def reschedule():
+      scheduled = False
+      for process in waiting_for_memory:
+        try:
+          process.aquire_memory(
+            self.memory.allocate(process.memory_required)
+          )
+          waiting_for_memory.remove(process)
+          self.scheduler.schedule(process, current, set_current)
+          processes.append(process)
+          scheduled = True
+        except MemoryError:
+          continue
+      return scheduled
+
     while True:
       for p in self.scheduler.waiting:
         p.wait(1)
 
-      arrived = arrives.get(self._timer, None)
+      for p in waiting_for_memory:
+        p.wait(1)
+        p.arrival_time += 1
+
+      arrived: List[IProcess] = arrives.get(self._timer, [])
 
       if arrived:
         for process in arrived:
+          try:
+            process.aquire_memory(
+              self.memory.allocate(process.memory_required)
+            )
+          except MemoryError:
+            waiting_for_memory.append(process)
+            continue
           processes.append(process)
           self.scheduler.schedule(process, current, set_current)
+          if len(waiting_for_memory):
+            reschedule()
+      elif len(waiting_for_memory):
+        if not (reschedule()):
+          self.scheduler.update(current, set_current)
       else:
         self.scheduler.update(current, set_current)
 
       if current and not current.finished:
         self.cpu.execute(current)
+        if current.finished:
+          self.memory.deallocate(current.memory)
 
       self._timer += 1
-      avg_waiting_time = sum([p.waiting_time for p in processes]) / (
-        len(processes) or 1
-      )
-      avg_service_time = sum([p.service_time for p in processes]) / (
-        len(processes) or 1
-      )
-      avg_turnaround_time = sum(
-        [p.service_time + p.waiting_time for p in processes]
-      ) / (len(processes) or 1)
       self.ui.update(
         self._timer,
         processes,
-        avg_waiting_time,
-        avg_service_time,
-        avg_turnaround_time,
+        self.memory,
       )
       await sleep(self.cpu.cycle_time)
