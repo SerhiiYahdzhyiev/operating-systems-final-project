@@ -16,6 +16,7 @@ root_parser.add_argument(
     "set-memory-requirements-range",
     "set-scheduling-algo",
     "set-memory-allocation-algo",
+    "set-memory-size",
   ],
   help="Run a pssim command.",
 )

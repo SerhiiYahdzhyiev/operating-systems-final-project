@@ -49,6 +49,19 @@ def dump_configs():
   with open(f"{config_path}/../../config/mem.yaml", "w") as f:
     yaml.dump(mem_config, f)
 
+def set_memory_size(args: list):
+  assert len(args) or print(
+    "pssim: error: argument required - positive integer"
+  )
+  assert int(args[0]) or print(
+    "pssim: error: argument should be positive integer"
+  )
+  assert int(args[0]) > 0 or print(
+    "pssim: error: argument should be positive integer"
+  )
+  _set_config(mem_config, "size", int(args[0]))
+  print(f"pssim: set memory size to {args[0]}")
+
 
 def set_num_processes(args: list):
   assert len(args) or print(
