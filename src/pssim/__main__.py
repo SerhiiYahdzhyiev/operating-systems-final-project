@@ -34,7 +34,6 @@ get_action_by = {
 
 
 async def main():
-  # TODO: Realize proper mechanism to config the simulation
   args = root_parser.parse_args()
 
   if args.command == "run":
@@ -51,7 +50,6 @@ def run_main():
   try:
     run(main())
   except KeyboardInterrupt:
-    # TODO: Extend gracefull exit (if needed)
     curses.endwin()
     print("Exitting...")
     exit(0)
