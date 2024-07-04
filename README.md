@@ -150,6 +150,18 @@ Replace `<algorithm>` with one of the following options:
 - `FF` (First Fit)
 - `BF` (Best Fit)
 
+
+#### Set Memory Size
+
+To set the memory allocation algorithm used in the simulation:
+
+```sh
+pssim set-memory-size <new-size>
+```
+
+Replace `<new-size>` with the desired value.
+
+
 ### Example Usage
 
 Below is an example sequence of commands to configure and run the simulation:
@@ -184,12 +196,17 @@ Below is an example sequence of commands to configure and run the simulation:
    pssim set-memory-allocation-algo FF
    ```
 
-7. Show the current configuration:
+7. Set the memory size:
+   ```sh
+   pssim set-memory-size 512
+   ```
+
+8. Show the current configuration:
    ```sh
    pssim show-config
    ```
 
-8. Run the simulation:
+9. Run the simulation:
    ```sh
    pssim run
    ```
