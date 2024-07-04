@@ -1,3 +1,4 @@
+from pssim.interfaces.memory import IMemoryChunk
 from pssim.interfaces.process import IProcess
 from .status import ProcessStatus
 
@@ -19,6 +20,7 @@ class Process(IProcess):
     self._burst_time_left = self.burst_time
     self._time_waited = 0
     self._time_executed = 0
+    self._memory = None
 
   def __repr__(self) -> str:
     repr_str = (
@@ -53,6 +55,13 @@ class Process(IProcess):
 
   def set_waiting(self):
     self.status = ProcessStatus.WAITING
+
+  def aquire_memory(self, chunk: IMemoryChunk):
+    self._memory = chunk
+
+  @property
+  def memory(self) -> IMemoryChunk | None:
+    return self._memory
 
   @property
   def finished(self) -> bool:
