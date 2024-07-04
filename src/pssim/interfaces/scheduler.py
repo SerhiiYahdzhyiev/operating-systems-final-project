@@ -1,5 +1,4 @@
-from queue import SimpleQueue
-from typing import Optional
+from typing import Callable, Optional
 from abc import ABC, abstractmethod
 
 from pssim.interfaces.process import IProcess
@@ -19,19 +18,17 @@ class ISchedulingStrategy(ABC):
   def schedule(
     self,
     process: IProcess,
-    current: Optional[IProcess],
+    current: IProcess|None,
+    set_current: Callable,
   ): ...
 
   @abstractmethod
   def update(
     self,
     current: Optional[IProcess],
+    set_current: Callable,
   ): ...
 
   @property
   @abstractmethod
-  def ready(self) -> SimpleQueue: ...
-
-  @property
-  @abstractmethod
-  def waiting(self) -> SimpleQueue: ...
+  def waiting(self) -> list[IProcess]: ...
